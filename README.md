@@ -49,3 +49,12 @@ cd kafka-quickstart
 You now have a Quarkus project with the dependencies needed to consume and produce messages from Kafka topics!  It's pretty empty , though, so let's add some code.
 
 Open this project in your favorite IDE so we can add some classes and configuration.
+
+### 3. Code and Config
+
+Once you have the project opened in your IDE, create the first three classes from the guide:
+* [PriceGenerator.java](https://quarkus.io/guides/kafka#the-price-generator)
+* [PriceConverter.java](https://quarkus.io/guides/kafka#the-price-converter)
+* [PriceResource.java](https://quarkus.io/guides/kafka#the-price-resource)
+
+

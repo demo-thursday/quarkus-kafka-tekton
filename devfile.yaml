@@ -1,0 +1,66 @@
+metadata:
+  name: quarkus-kafka-demo
+projects:
+  - name: quarkus-quickstarts
+    source:
+      location: 'https://github.com/<user>/<repo>.git'
+      type: 'git'
+components:
+  - id: redhat/quarkus-java11/latest
+    type: chePlugin
+  - mountSources: true
+    endpoints:
+      - name: quarkus-development-server
+        port: 8080
+      - name: main-page
+        port: 8080
+        attributes:
+          path: /
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/jboss/.m2
+    alias: maven
+    image: >-
+      registry.redhat.io/codeready-workspaces/plugin-java11-rhel8:2.1
+    env:
+      - value: >-
+          -XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom
+          -Duser.home=/home/jboss
+        name: JAVA_OPTS
+      - value: $(JAVA_OPTS)
+        name: MAVEN_OPTS
+apiVersion: 1.0.0
+commands:
+  - name: Package the application
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/quarkus-quickstarts'
+        type: exec
+        command: mvn package
+        component: maven
+  - name: Start Quarkus in devmode (hot deploy + debug)
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/quarkus-quickstarts'
+        type: exec
+        command: 'mvn compile quarkus:dev'
+        component: maven
+  - name: Attach remote debugger
+    actions:
+      - referenceContent: |
+          {
+            "version": "0.2.0",
+            "configurations": [
+              {
+                "type": "java",
+                "request": "attach",
+                "name": "Attach to Remote Quarkus App",
+                "hostName": "localhost",
+                "port": 5005
+              }
+            ]
+          }
+        type: vscode-launch

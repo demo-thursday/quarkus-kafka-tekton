@@ -8,4 +8,7 @@ resources:
   - tasks/oc-quarkus-s2i.yaml
   - tasks/openshift-client.yaml
   - pipelines/build-pipeline.yaml
-  
+  - triggers/build-template.yaml
+  - triggers/build-binding.yaml
+  - triggers/build-event-listener.yaml
+  - triggers/trigger-route.yaml

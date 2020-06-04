@@ -1,4 +1,4 @@
-# Reactive and Imperative Architectures with Quarkus and Kafka
+# Reactive Architectures with Quarkus and Kafka
 
 Demo data: 2020-06-04
 

@@ -90,7 +90,7 @@ https://<codeready worksapces url>/f?url=<github repo url>
 Otherwise, open this project in your favorite IDE so we can add some classes and configuration.
 
 
-## 3. Code and Config
+## 4. Code and Config
 
 ### Create Classes
 
@@ -114,6 +114,9 @@ mp.messaging.outgoing.generated-price.value.serializer=org.apache.kafka.common.s
 mp.messaging.incoming.prices.connector=smallrye-kafka
 mp.messaging.incoming.prices.value.deserializer=org.apache.kafka.common.serialization.IntegerDeserializer
 
+# Add Kafka health check.
+quarkus.kafka.health.enabled=true
+
 # Package app as an uber jar.
 quarkus.package.uber-jar=true
 ```
@@ -124,7 +127,9 @@ Finally, the `quarkus.pakage.uber-jar=true` property, well, indicated that the a
 
 ### Commit and Push
 
-Commit and push your changes.
+If you want to have your build start automatically, first create a Github webhook forr your repo.  Use the URL exposed by the trigger route in the `cicd` project and set the payload type to `json`.  That's all you should need to do.
+
+Finally, commit and push your code.
 
 ```
 git add --all
@@ -132,5 +137,19 @@ git commit -m "Added code."
 git push origin master
 ```
 
+This should trigger your OpenShift Pipelines build.
+
 ## 5. Build and Run
 
+If you don't want to setup a webhook, you can trigger your pipeline run manually.
+
+First, edit the file `pipelinerun/run-build.yaml` and update the git url paramater to match your Github repository.
+
+Finally, create a new `PipelineRun`, but make sure you're in the correrct namespace first!
+
+```
+oc project cicd
+oc create -f pipelinerun/run-build.yaml
+```
+
+This should kick off the build pipeline.

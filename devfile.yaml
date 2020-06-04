@@ -3,7 +3,7 @@ metadata:
 projects:
   - name: quarkus-quickstarts
     source:
-      location: 'https://github.com/<user>/<repo>.git'
+      location: 'git@github.com:pittar/demo-prep.git'
       type: 'git'
 components:
   - id: redhat/quarkus-java11/latest

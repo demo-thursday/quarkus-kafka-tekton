@@ -7,11 +7,9 @@ spec:
     name: quarkus-maven-build
   params:
     - name: git-repo-revision
-      type: string
-      default: master
+      value: 'master'
     - name: git-repo-url
-      type: string
-      default: https://github.com/pittar/kafka-quickstart.git
+      value: 'https://github.com/pittar/kafka-quickstart.git'
   workspaces:
   - name: build-workspace
     persistentVolumeClaim:

@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cicd
+resources:
+  - workspaces/workspace-build-pvc.yaml
+  - workspaces/workspace-m2-repo.yaml
+  - tasks/maven.yaml
+  - tasks/oc-quarkus-s2i.yaml
+  - tasks/openshift-client.yaml
+  - pipelines/build-pipeline.yaml
+  

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: quarkus
+    app.kubernetes.io/component: quarkus
+    app.kubernetes.io/instance: quarkus
+    app.kubernetes.io/part-of: quarkus
+  name: quarkus
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: quarkus
+    deploymentconfig: quarkus
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

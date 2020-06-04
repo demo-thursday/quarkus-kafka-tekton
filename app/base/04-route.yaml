@@ -1,0 +1,22 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: quarkus
+    app.kubernetes.io/component: quarkus
+    app.kubernetes.io/instance: quarkus
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: quarkus
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: "8"
+  name: quarkus
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: quarkus
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress: []

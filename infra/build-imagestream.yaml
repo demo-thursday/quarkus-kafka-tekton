@@ -1,0 +1,12 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: quarkus
+    app.kubernetes.io/name: java
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: "8"
+  name: quarkus
+spec:
+  lookupPolicy:
+    local: false

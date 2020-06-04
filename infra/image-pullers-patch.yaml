@@ -1,0 +1,12 @@
+- op: add
+  path: /subjects/-
+  value:
+    kind: ServiceAccount
+    name: quarkus
+    namespace: quarkus-dev
+- op: add
+  path: /subjects/-
+  value:
+    kind: ServiceAccount
+    name: quarkus
+    namespace: quarkus-uat

@@ -1,0 +1,21 @@
+kind: PipelineRun
+apiVersion: tekton.dev/v1beta1
+metadata:
+  generateName: quarkus-run-
+spec:
+  pipelineRef:
+    name: quarkus-maven-build
+  params:
+    - name: git-repo-revision
+      type: string
+      default: master
+    - name: git-repo-url
+      type: string
+      default: https://github.com/pittar/kafka-quickstart.git
+  workspaces:
+  - name: build-workspace
+    persistentVolumeClaim:
+      claimName: quarkus-build-workspace-pvc
+  - name: local-maven-repo
+    persistentVolumeClaim:
+      claimName: maven-m2-repo-pvc

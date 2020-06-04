@@ -12,6 +12,13 @@ This demo is based on the [Quarkus Kafka quickstart](https://quarkus.io/guides/k
 * Maven 3.6 installed locally.
 * Github account.
 
+## 0. Install Dev Tools
+
+1. Install the OpenShift Pipelines Operator (1.0.1 or newer)
+2. Install Nexus: `oc apply -k infra`
+3. Install app environments: `oc apply -k app/overlays/all`
+4. Install Tekton resourcdes: `oc apply -k tekton`
+
 ## 1. Install Kafka
 
 First, start by installing Kafka on your OpenShift cluster.  We'll use the upstream Strimzi operator.  If you have a subscription for Red Hat AMQ or Red Hat Integration, you can also use the fully supported AMQ Streams operator.
@@ -46,15 +53,84 @@ mvn io.quarkus:quarkus-maven-plugin:1.4.2.Final:create \
 cd kafka-quickstart
 ```
 
-You now have a Quarkus project with the dependencies needed to consume and produce messages from Kafka topics!  It's pretty empty , though, so let's add some code.
+Since we also want health endpoints, let's add the `smallrye-health` extension:
+```
+mvn quarkus:add-extension -Dextensions="smallrye-health"
+```
 
-Open this project in your favorite IDE so we can add some classes and configuration.
+In case you were wondering, all that command really does is add the health dependency to the POM file.
+```
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+```
 
-### 3. Code and Config
+You now have a Quarkus project with the dependencies needed to consume and produce messages from Kafka topics!  It's pretty empty , though, so let's add some code.  But first...
+
+## 3. Git Commit and Push
+
+Create a new GitHub repo for your application.  Once you have done this, follow the instructions in your new GitHub repo to init your repo and commit/push your code to master.
+
+For this demo, I'll use [CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview).  To do this I'll drop the `devfile.yaml` file found in this repository in the root of my new app repository and change the git url to that of my own repository before the initial commit.
+
+```
+git init
+git add --all
+git commit -m "Initial commit."
+git remote add origin <repo url>
+git push -u origin master
+```
+
+If using CodeReady Workspaces, you can launch your workspace in your browser with the following link:
+```
+https://<codeready worksapces url>/f?url=<github repo url>
+```
+
+Otherwise, open this project in your favorite IDE so we can add some classes and configuration.
+
+
+## 3. Code and Config
+
+### Create Classes
 
 Once you have the project opened in your IDE, create the first three classes from the guide:
 * [PriceGenerator.java](https://quarkus.io/guides/kafka#the-price-generator)
 * [PriceConverter.java](https://quarkus.io/guides/kafka#the-price-converter)
 * [PriceResource.java](https://quarkus.io/guides/kafka#the-price-resource)
 
+### Add Configuration
+
+Update the main configuration file found at `src/main/resources/application.properties` to include the following configuration:
+
+```
+# Configure the Kafka sink (we write to it)
+kafka.bootstrap.servers=my-cluster-kafka-bootstrap.kafka:9092
+mp.messaging.outgoing.generated-price.connector=smallrye-kafka
+mp.messaging.outgoing.generated-price.topic=prices
+mp.messaging.outgoing.generated-price.value.serializer=org.apache.kafka.common.serialization.IntegerSerializer
+
+# Configure the Kafka source (we read from it)
+mp.messaging.incoming.prices.connector=smallrye-kafka
+mp.messaging.incoming.prices.value.deserializer=org.apache.kafka.common.serialization.IntegerDeserializer
+
+# Package app as an uber jar.
+quarkus.package.uber-jar=true
+```
+
+This configuration tells the app where to find our Kafka cluster (`my-cluster-kafka-bootstrap.kafka:9092`), as well as the connectors, topics, and serializers/deserializers to use.
+
+Finally, the `quarkus.pakage.uber-jar=true` property, well, indicated that the app should be packaged as an uber jar.  Without this, the app jar would *not* include dependencies, they would be in the `/target/lib` directory after build.
+
+### Commit and Push
+
+Commit and push your changes.
+
+```
+git add --all
+git commit -m "Added code."
+git push origin master
+```
+
+## 5. Build and Run
 
